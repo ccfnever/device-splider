@@ -6,6 +6,7 @@ class Excel {
   constructor(inputPath) {
     this.inputPath = inputPath
     this.workSheetsFromFile = null
+    this.init()
   }
 
   init() {
@@ -22,11 +23,11 @@ class Excel {
     this.workSheetsFromFile = data
   }
 
-  exportExcel() {
+  exportExcel(outPath) {
     const buffer = xlsx.build(this.workSheetsFromFile)
-    fs.writeFile('./out/result,xls', buffer, err => {
+    fs.writeFile(outPath, buffer, err => {
       if (err) throw err;
-      console.log('写入完毕');
+      console.log('文件保存成功');
     })
   }
 }
