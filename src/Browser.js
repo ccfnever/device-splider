@@ -8,7 +8,7 @@ class Browser {
       headless: false,
       defaultViewport: null,
       ignoreDefaultArgs: ['--disable-extensions'],
-      args: ['--start-maximized', '--no-sandbox',
+      args: ['--start-maximized', `--window-size=200,300`,'--no-sandbox',
         '--disable-dev-shm-usage', '--disable-setuid-sandbox', // <-- add this one
         '--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.55 Safari/537.36',
       ],

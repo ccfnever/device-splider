@@ -2,7 +2,7 @@ const run = require('./runner')
 const Excel = require('./Excel')
 const path = require('path')
 
-const xlsFile = path.resolve(__dirname, '../excel/input2.xlsx')
+const xlsFile = path.resolve(__dirname, '../excel/input.xlsx')
 const outXlsFile = path.resolve(__dirname, '../out/result.xlsx')
 const xls = new Excel(xlsFile)
 const xlsData = xls.getExcelData()
@@ -13,7 +13,7 @@ const runAll = async () => {
   const startIndex = 9
 
   for (let i = 1; i < realData.length; i++) {
-    // if (i > 1) continue
+    // if (i < 885) continue
     const singleResult = await run(realData[i][5])
     const { pending, detailLink, deviceInfoList } = singleResult
 
@@ -30,7 +30,7 @@ const runAll = async () => {
     }
 
     // 写入数据
-    console.log(`============ 正在写入序号：${realData[i][0]}===================`)
+    console.log(`============ 正在写入序号：${realData[i][0]} ===================`)
     xlsData[0].data = realData
     xls.setExcelData(xlsData)
     xls.exportExcel(outXlsFile)

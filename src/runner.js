@@ -20,8 +20,8 @@ async function run(firstLink) {
     await page.goto(link);
     // await sleep(2000)
 
-    await page.waitForSelector('#review-body');
-    const specs = await page.$$('#review-body .makers a')
+    await page.waitForSelector('#news');
+    const specs = await page.$$('#review-body .makers ul a')
 
     if (specs.length > 1) return 1
     if (specs.length === 0) return 0
@@ -37,10 +37,26 @@ async function run(firstLink) {
 
   // 详情信息
   const getDeviceInfo = async (link) => {
+    // 定义需要获取的字段
+    const column = ['Size', 'Resolution', 'OS', 'Chipset', 'CPU', 'GPU', 'Internal', 'WLAN', 'Bluetooth']
     const page = await newCustomPage(browser)
     console.log(`开始访问详情页 ${link}`)
 
-    await page.goto(link);
+    try {
+      await page.goto(link, {
+        timeout:18000
+      });
+    } catch (err) {
+      console.log('加载超时=======停止加载')
+      await page.evaluate(() => {
+        if (window) {
+          window.stop()
+          console.log('关闭加载')
+        }
+
+      })
+    }
+
     // await sleep(2000)
 
     await page.waitForSelector('#specs-list');
@@ -55,7 +71,8 @@ async function run(firstLink) {
       const blockInfoList = infoTable.eq(i).find('tr')
       for (let j = 0; j < blockInfoList.length; j++) {
         const title = blockInfoList.eq(j).find('.ttl').text()
-        const info = blockInfoList.eq(j).find('.nfo').text()
+        if (!column.includes(title)) continue
+        const info = blockInfoList.eq(j).find('.nfo').html()
         infoList.push(`[${title}]----${info}`)
       }
     }
@@ -66,8 +83,10 @@ async function run(firstLink) {
 
   const deviceInfoHref = await getDetailPage(firstLink)
   // 无匹配或多个匹配，则无需查询详情页，返回人工处理
-  if (deviceInfoHref === 0 || deviceInfoHref === 1) return { pending: deviceInfoHref }
-
+  if (deviceInfoHref === 0 || deviceInfoHref === 1) {
+    await browser.close()
+    return { pending: deviceInfoHref }
+  }
   const detailLink = `https://www.gsmarena.com/${deviceInfoHref}`
   const deviceInfoList = await getDeviceInfo(detailLink)
 
