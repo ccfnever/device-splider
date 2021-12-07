@@ -9,11 +9,19 @@ const xlsData = xls.getExcelData()
 
 const realData = xlsData[0].data.filter(c => c.length)
 
+// 设置爬虫起始和结束行数，避免重复抓取
+const startIndex = 494
+// endIndex 0 为不限制
+const endIndex = 0
+
 const runAll = async () => {
   const startIndex = 9
 
   for (let i = 1; i < realData.length; i++) {
-    // if (i < 885) continue
+    // 在这里跳过
+    if (i < startIndex) continue
+    if (endIndex !== 0 && i > endIndex) continue
+    
     const singleResult = await run(realData[i][5])
     const { pending, detailLink, deviceInfoList } = singleResult
 
